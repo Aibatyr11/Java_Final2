@@ -7,42 +7,48 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TaskService {
+public class BookService {
+
     @Autowired
-    private TaskRepository taskRepository;
+    private BookRepository bookRepository;
 
-    public Task save(Task task) {
-        return taskRepository.save(task);
+
+    public Book save(Book book) {
+        return bookRepository.save(book);
     }
 
-    public List<Task> findByUser(User user) {
-        return taskRepository.findByUser(user);
+
+    public List<Book> findByUser(User user) {
+        return bookRepository.findByUser(user);
     }
+
 
     public void delete(Long id) {
-        taskRepository.deleteById(id);
-    }
-
-    public Optional<Task> findById(Long id) {
-        return taskRepository.findById(id);
-    }
-
-    public List<Task> findByUserAndPriority(User user, int priority) {
-        return taskRepository.findByUserAndPriority(user, priority);
-    }
-
-    public List<Task> findByUserAndCategory(User user, Category category) {
-        return taskRepository.findByUserAndCategory(user, category);
-    }
-
-    public List<Task> findByCategory(Category category) {
-        return taskRepository.findByCategory(category);
-    }
-
-    public List<Task> findAll() {
-        return taskRepository.findAll();  // Вызываем метод findAll() у репозитория
+        bookRepository.deleteById(id);
     }
 
 
+    public Optional<Book> findById(Long id) {
+        return bookRepository.findById(id);
+    }
+
+
+    public List<Book> findByUserAndRating(User user, int rating) {
+        return bookRepository.findByUserAndRating(user, rating);
+    }
+
+
+    public List<Book> findByUserAndGenre(User user, Genre genre) {
+        return bookRepository.findByUserAndGenre(user, genre);
+    }
+
+
+    public List<Book> findByGenre(Genre genre) {
+        return bookRepository.findByGenre(genre);
+    }
+
+
+    public List<Book> findAll() {
+        return bookRepository.findAll();
+    }
 }
-

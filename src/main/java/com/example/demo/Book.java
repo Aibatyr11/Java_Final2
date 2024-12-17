@@ -4,27 +4,32 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Task {
+@Table(name = "book")
+public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @Column(nullable = false)
     private String description;
+
+    @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
-    private String status;
 
+    @Column(nullable = false)
+    private Integer rating;
 
-    private Integer priority;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String author;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
+    @JoinColumn(name = "genre_id", referencedColumnName = "id")
+    private Genre genre;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
 
     public Long getId() {
@@ -33,14 +38,6 @@ public class Task {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
@@ -59,27 +56,32 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public String getStatus() {
-        return status;
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-
-    public void setPriority(Integer priority) {
-
-        if (priority == null) {
-            this.priority = 1;
+    public void setRating(Integer rating) {
+        if (rating == null) {
+            this.rating = 1;
         } else {
-            this.priority = priority;
+            this.rating = rating;
         }
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 
     public User getUser() {
@@ -88,13 +90,5 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 }

@@ -27,7 +27,7 @@ public class RegistrationController {
     public String registerUser(@ModelAttribute("user") User user, Model model) {
         try {
             userService.saveUser(user);
-            return "redirect:/categories";
+            return "redirect:/login";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", "Username already exists");
             return "register";

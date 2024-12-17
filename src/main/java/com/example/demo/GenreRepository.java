@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByNameAndUser(String name, User user);
+public interface GenreRepository extends JpaRepository<Genre, Long> {
 
-    List<Category> findByUser(User user);
-    List<Category> findAll();
+    Optional<Genre> findByGenreName(String genreName);
+
+
+    @Override
+    List<Genre> findAll();
 }

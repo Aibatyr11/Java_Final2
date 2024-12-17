@@ -27,7 +27,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/categories", true)
+                        .defaultSuccessUrl("/genres", true)
                         .failureUrl("/login?error=true")
                 );
 

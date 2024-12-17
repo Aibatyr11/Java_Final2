@@ -6,25 +6,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "genre")
+public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(name = "genre_name", nullable = false)
+    private String genreName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "genre_id", nullable = false, unique = true)
+    private Long genreId;
 
-    // Геттеры и сеттеры
+
     public Long getId() {
         return id;
     }
@@ -33,19 +30,19 @@ public class Category {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getGenreName() {
+        return genreName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGenreName(String genreName) {
+        this.genreName = genreName;
     }
 
-    public User getUser() {
-        return user;
+    public Long getGenreId() {
+        return genreId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGenreId(Long genreId) {
+        this.genreId = genreId;
     }
 }

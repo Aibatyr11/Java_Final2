@@ -5,80 +5,54 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/categories")
-public class CategoryController {
+@RequestMapping("/genres")
+public class GenreController {
 
-    private final CategoryService categoryService;
-    private final UserService userService;
-    private final TaskService taskService;
+    private final GenreService genreService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, UserService userService, TaskService taskService) {
-        this.categoryService = categoryService;
-        this.userService = userService;
-        this.taskService = taskService;
+    public GenreController(GenreService genreService) {
+        this.genreService = genreService;
     }
 
 
     @GetMapping
-    public String listCategories(Model model, Principal principal) {
-
-        User user = userService.findByUsername(principal.getName())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-
-        //List<Category> categories = categoryService.findByUser(user);
-
-
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("categories", categories);
-        return "categories/list"; // Ссылка на categories/list.html
+    public String listGenres(Model model) {
+        List<Genre> genres = genreService.findAll();
+        model.addAttribute("genres", genres);
+        return "genres/list"; // Ссылка на genres/list.html
     }
 
-
+    // Отображение формы для добавления нового жанра
     @GetMapping("/new")
-    public String newCategory(Model model) {
-        model.addAttribute("category", new Category());
-        return "categories/form";
+    public String newGenre(Model model) {
+        model.addAttribute("genre", new Genre());
+        return "genres/form";
     }
 
-
+    // Сохранение нового жанра
     @PostMapping
-    public String saveCategory(@ModelAttribute Category category, Principal principal, Model model) {
-
-        User user = userService.findByUsername(principal.getName())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-
+    public String saveGenre(@ModelAttribute Genre genre, Model model) {
         try {
-            categoryService.saveCategory(category, user);
-            return "redirect:/categories";
+            genreService.saveGenre(genre);
+            return "redirect:/genres";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("category", category);
-            return "categories/form";
+            model.addAttribute("genre", genre);
+            return "genres/form";
         }
     }
 
-
+    // Просмотр одного жанра по ID
     @GetMapping("/{id}")
-    public String showCategoryTasks(@PathVariable Long id, Model model) {
+    public String showGenre(@PathVariable Long id, Model model) {
+        Genre genre = genreService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid genre Id: " + id));
 
-        Category category = categoryService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
-
-
-        List<Task> tasks = taskService.findByCategory(category);
-
-
-        model.addAttribute("category", category);
-        model.addAttribute("tasks", tasks);
-
-
-        return "tasks/list";
+        model.addAttribute("genre", genre);
+        return "genres/details"; // Ссылка на genres/details.html
     }
 }

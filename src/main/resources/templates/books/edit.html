@@ -1,70 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>taskedit</title>
-    <link rel="stylesheet" type="text/css" href="/taskedit.css">
-    <h1 th:if="${task.id != null}">Edit Task</h1>
-    <h1 th:if="${task.id == null}">Create New Task</h1>
-
-
+    <title th:text="${book.id != null} ? 'Edit Book' : 'Create New Book'">Book Form</title>
+    <link rel="stylesheet" type="text/css" href="/bookedit.css">
 </head>
 <body>
-<h1 th:if="${task.id != null}">Edit Task</h1>
-<h1 th:if="${task.id == null}">Create New Task</h1>
+<!-- Заголовок страницы -->
+<h1 th:if="${book.id != null}">Edit Book</h1>
+<h1 th:if="${book.id == null}">Create New Book</h1>
 
-<form th:action="@{/tasks}" th:object="${task}" method="post">
+<!-- Форма добавления/редактирования книги -->
+<form th:action="@{/books}" th:object="${book}" method="post">
 
-    <!-- Hidden input for Task ID -->
+    <!-- Скрытое поле для ID книги -->
     <input type="hidden" th:field="*{id}" />
 
-    <!-- Поле выбора категории -->
+    <!-- Поле выбора жанра -->
     <div>
-        <label for="category">Category:</label>
-        <select id="category" th:field="*{category.id}" required>
-            <option value="">Select a category</option>
-            <option th:each="category : ${categories}"
-                    th:value="${category.id}"
-                    th:text="${category.name}"
-                    th:selected="${task.category?.id == category.id}">
+        <label for="genre">Genre:</label>
+        <select id="genre" th:field="*{genre.id}" required>
+            <option value="">Select a genre</option>
+            <option th:each="genre : ${genres}"
+                    th:value="${genre.id}"
+                    th:text="${genre.genreName}"
+                    th:selected="${book.genre?.id == genre.id}">
             </option>
         </select>
     </div>
 
-    <!-- Task Title -->
-    <div>
-        <label for="title">Title:</label>
-        <input type="text" id="title" th:field="*{title}" placeholder="Enter task title" required />
-    </div>
-
-    <!-- Task Description -->
+    <!-- Описание книги -->
     <div>
         <label for="description">Description:</label>
-        <textarea id="description" th:field="*{description}" placeholder="Enter task description"></textarea>
+        <textarea id="description" th:field="*{description}" placeholder="Enter book description" required></textarea>
     </div>
 
-    <!-- Due Date -->
+    <!-- Дата публикации -->
     <div>
-        <label for="dueDate">Due Date:</label>
-        <input type="date" id="dueDate" th:field="*{dueDate}" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" />
+        <label for="dueDate">Publication Date:</label>
+        <input type="date" id="dueDate" th:field="*{dueDate}"
+               th:attr="max=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required />
     </div>
 
-    <!-- Task Status -->
+    <!-- Рейтинг книги -->
     <div>
-        <label for="status">Status:</label>
-        <input type="text" id="status" th:field="*{status}" placeholder="Enter task status" />
+        <label for="rating">Rating:</label>
+        <input type="number" id="rating" th:field="*{rating}" placeholder="Enter rating (1-10)" min="1" max="10" required />
     </div>
 
-    <!-- Task Priority -->
+    <!-- Автор книги -->
     <div>
-        <label for="priority">Priority:</label>
-        <input type="number" id="priority" th:field="*{priority}" min="1" max="5" />
+        <label for="author">Author:</label>
+        <input type="text" id="author" th:field="*{author}" placeholder="Enter author name" required />
     </div>
 
-    <!-- Submit Button -->
+    <!-- Кнопка сохранения -->
     <div>
-        <button type="submit">Save Task</button>
+        <button type="submit" th:text="${book.id != null} ? 'Update Book' : 'Save Book'">Save Book</button>
     </div>
 </form>
-
 </body>
 </html>

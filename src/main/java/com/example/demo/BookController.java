@@ -9,113 +9,110 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/tasks")
-public class TaskController {
+@RequestMapping("/books")
+public class BookController {
+
     @Autowired
-    private TaskService taskService;
+    private BookService bookService;
+
     @Autowired
     private UserService userService;
+
     @Autowired
-    private GenreService categoryService;
+    private GenreService genreService;
+
 
     @GetMapping
-    public String listTasks(Model model, Principal principal) {
+    public String listBooks(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow();
-        List<Task> tasks = taskService.findByUser(user);
-        model.addAttribute("tasks", tasks);
-        return "tasks/list";
+        List<Book> books = bookService.findByUser(user);
+        model.addAttribute("books", books);
+        return "books/list";
     }
+
+
     @GetMapping("/list")
-    public String listAllTasks(Model model) {
-        List<Task> tasks = taskService.findAll(); // Получаем все задачи
-        model.addAttribute("tasks", tasks);
-        return "tasks/list"; // Страница для отображения всех задач
+    public String listAllBooks(Model model) {
+        List<Book> books = bookService.findAll();
+        model.addAttribute("books", books);
+        return "books/list";
     }
+
 
     @GetMapping("/new")
-    public String newTask(Model model, Principal principal) {
-        User user = userService.findByUsername(principal.getName()).orElseThrow();
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("task", new Task());
-        model.addAttribute("categories", categories);
-
-        // model.addAttribute("categories", categoryService.findByUser(user));
-        return "tasks/form";
+    public String newBook(Model model) {
+        List<Genre> genres = genreService.findAll();
+        model.addAttribute("book", new Book());
+        model.addAttribute("genres", genres);
+        return "books/form";
     }
 
-
     @PostMapping
-    public String saveTask(@ModelAttribute Task task, @RequestParam("categoryId") Long categoryId, Principal principal) {
+    public String saveBook(@ModelAttribute Book book, @RequestParam("genreId") Long genreId, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow();
-        Category category = categoryService.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        Genre genre = genreService.findById(genreId)
+                .orElseThrow(() -> new IllegalArgumentException("Genre not found"));
 
-
-
-
-        if (task.getPriority() == null) {
-            task.setPriority(1);
+        if (book.getRating() == null) {
+            book.setRating(1);
         }
-        if (task.getDueDate() == null) {
-            task.setDueDate(LocalDate.now());
+        if (book.getDueDate() == null) {
+            book.setDueDate(LocalDate.now());
         }
 
+        book.setUser(user);
+        book.setGenre(genre);
 
-        task.setUser(user);
-        task.setCategory(category);
-
-
-        taskService.save(task);
-        return "redirect:/tasks";
+        bookService.save(book);
+        return "redirect:/books";
     }
 
 
     @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable Long id) {
-        taskService.delete(id);
-        return "redirect:/tasks";
+    public String deleteBook(@PathVariable Long id) {
+        bookService.delete(id);
+        return "redirect:/books";
     }
+
 
     @GetMapping("/edit/{id}")
-    public String editTask(@PathVariable Long id, Model model, Principal principal) {
-        Task task = taskService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid task Id:" + id));
+    public String editBook(@PathVariable Long id, Model model, Principal principal) {
+        Book book = bookService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
         User user = userService.findByUsername(principal.getName()).orElseThrow();
-        if (task.getDueDate() == null) {
-            task.setDueDate(LocalDate.now());
-        }
-        model.addAttribute("task", task);
-        model.addAttribute("categories", categoryService.findByUser(user));
-        return "tasks/form";
-    }
 
+        if (book.getDueDate() == null) {
+            book.setDueDate(LocalDate.now());
+        }
+        model.addAttribute("book", book);
+        model.addAttribute("genres", genreService.findAll());
+        return "books/form";
+    }
 
 
     @GetMapping("/filter")
-    public String filterTasks(@RequestParam(required = false) Integer priority, Model model, Principal principal) {
+    public String filterBooks(@RequestParam(required = false) Integer rating, Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow();
-        List<Task> tasks;
+        List<Book> books;
 
-        if (priority != null) {
-            tasks = taskService.findByUserAndPriority(user, priority);
+        if (rating != null) {
+            books = bookService.findByUserAndRating(user, rating);
         } else {
-            tasks = taskService.findByUser(user);
+            books = bookService.findByUser(user);
         }
 
-        model.addAttribute("tasks", tasks);
-        return "tasks/list";
+        model.addAttribute("books", books);
+        return "books/list";
     }
 
-    @GetMapping("/filterByCategory/{id}")
-    public String filterTasksByCategory(@PathVariable Long id, Model model, Principal principal) {
-        User user = userService.findByUsername(principal.getName()).orElseThrow();
-        Category category = categoryService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+    @GetMapping("/filterByGenre/{id}")
+    public String filterBooksByGenre(@PathVariable Long id, Model model) {
+        Genre genre = genreService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid genre ID: " + id));
 
-
-        List<Task> tasks = taskService.findByUserAndCategory(user, category);
-        model.addAttribute("tasks", tasks);
-        return "tasks/list";
+        List<Book> books = bookService.findByGenre(genre);
+        model.addAttribute("books", books);
+        model.addAttribute("genres", genreService.findAll());
+        return "books/list"; // Путь к шаблону
     }
-
-
 
 }
