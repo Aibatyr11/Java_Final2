@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Genres</title>
+    <link rel="stylesheet" type="text/css" href="/list.css">
+</head>
+<body>
+<h1>Genres</h1>
+
+<!-- Таблица для отображения жанров -->
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Genre Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre : ${genres}">
+        <td th:text="${genre.id}"></td>
+        <td th:text="${genre.genreName}"></td>
+        <td>
+            <!-- Ссылка на книги в этом жанре -->
+            <a th:href="@{/books/filterByGenre/{id}(id=${genre.id})}">View Books</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Кнопка для просмотра всех книг -->
+<p>
+    <a th:href="@{/books/list}">View All Books</a>
+</p>
+
+<!-- Кнопка для добавления нового жанра -->
+<p>
+    <a th:href="@{/genres/new}">Add New Genre</a>
+</p>
+</body>
+</html>

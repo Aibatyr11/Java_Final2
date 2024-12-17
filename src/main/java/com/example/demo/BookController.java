@@ -16,7 +16,7 @@ public class TaskController {
     @Autowired
     private UserService userService;
     @Autowired
-    private CategoryService categoryService;
+    private GenreService categoryService;
 
     @GetMapping
     public String listTasks(Model model, Principal principal) {
